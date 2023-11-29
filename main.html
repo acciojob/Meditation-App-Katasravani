@@ -1,16 +1,146 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
 
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .vid-container {
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .player-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .sound-picker {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #time-select {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .time-display {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .play {
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .play:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
+
+<div id="app">
+    <div class="vid-container">
+        <video id="meditationVideo" width="100%" height="auto" loop>
+            <source src="Videos/beach.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="player-container">
+        <audio id="meditationAudio" loop>
+            <source id="audioSource" src="Sounds/beach.mp3" type="audio/mp3">
+        </audio>
+    </div>
+
+    <div class="sound-picker">
+        <button onclick="changeAudio('Sounds/beach.mp3')">Meditation-A</button>
+        <button onclick="changeAudio('Sounds/rain.mp3')">Meditation-B</button>
+    </div>
+
+    <div id="time-select">
+        <button id="smaller-mins" onclick="setTime(2)">2 Min</button>
+        <button id="medium-mins" onclick="setTime(5)">5 Min</button>
+        <button id="long-mins" onclick="setTime(10)">10 Min</button>
+    </div>
+
+    <div class="time-display" id="timer">10:00</div>
+
+    <button class="play" onclick="togglePlay()">Play/Pause</button>
+</div>
+
+<script>
+    var timer;
+    var totalTime = 600; // Default time is 10 minutes
+    var isPlaying = false;
+
+    function changeAudio(audioSrc) {
+        document.getElementById('audioSource').src = audioSrc;
+        document.getElementById('meditationAudio').load();
+    }
+
+    function setTime(minutes) {
+        totalTime = minutes * 60;
+        updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+        var minutes = Math.floor(totalTime / 60);
+        var seconds = totalTime % 60;
+
+        document.getElementById('timer').innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    function togglePlay() {
+        var audio = document.getElementById('meditationAudio');
+        isPlaying ? audio.pause() : audio.play();
+        isPlaying = !isPlaying;
+
+        if (isPlaying) {
+            startTimer();
+        } else {
+            clearInterval(timer);
+        }
+    }
+
+    function startTimer() {
+        timer = setInterval(function () {
+            if (totalTime > 0) {
+                totalTime--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timer);
+                isPlaying = false;
+                document.getElementById('meditationAudio').pause();
+            }
+        }, 1000);
+    }
 </script>
 
 </body>
-
 </html>
